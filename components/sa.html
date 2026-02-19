@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Chit Group</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:8px;
+    margin:6px 0 15px;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-primary{
+    background:#007bff;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#0056b3;
+}
+
+.member-box{
+    border:1px solid #ddd;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:8px;
+    background:#fafafa;
+}
+
+.member-box h4{
+    margin-top:0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Create New Chit Group</h2>
+
+<label>Total Chit Amount</label>
+<input type="number" id="totalAmount" placeholder="Enter total amount">
+
+<label>Total Members</label>
+<input type="number" id="totalMembers" placeholder="Enter number of members">
+
+<button class="btn-primary" onclick="generateMembers()">Generate Member Fields</button>
+
+<hr>
+
+<form id="groupForm">
+
+<div id="membersContainer"></div>
+
+<button type="submit" class="btn-primary">Save Group</button>
+
+</form>
+
+</div>
+
+<script>
+
+let autoId = 1; // Frontend demo only
+
+function generateMembers(){
+
+    const total = document.getElementById("totalMembers").value;
+    const container = document.getElementById("membersContainer");
+    container.innerHTML = "";
+
+    if(total <= 0){
+        alert("Enter valid number of members");
+        return;
+    }
+
+    for(let i=1; i<=total; i++){
+
+        const div = document.createElement("div");
+        div.className = "member-box";
+
+        div.innerHTML = `
+            <h4>Member ${i}</h4>
+
+            <label>Member ID</label>
+            <input type="text" value="${autoId++}" readonly>
+
+            <label>Name</label>
+            <input type="text" name="name${i}" required>
+
+            <label>Phone</label>
+            <input type="text" name="phone${i}" required>
+        `;
+
+        container.appendChild(div);
+    }
+}
+
+document.getElementById("groupForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const totalAmount = document.getElementById("totalAmount").value;
+    const totalMembers = document.getElementById("totalMembers").value;
+
+    let members = [];
+
+    const memberBoxes = document.querySelectorAll(".member-box");
+
+    memberBoxes.forEach((box,index)=>{
+        const inputs = box.querySelectorAll("input");
+        members.push({
+            id: inputs[0].value,
+            name: inputs[1].value,
+            phone: inputs[2].value
+        });
+    });
+
+    const groupData = {
+        totalAmount: totalAmount,
+        totalMembers: totalMembers,
+        members: members
+    };
+
+    console.log(groupData);
+
+    // 🔥 SEND TO BACKEND HERE
+    /*
+    fetch("/api/createGroup", {
+        method:"POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(groupData)
+    })
+    */
+
+    alert("Group data ready. Check console.");
+});
+
+</script>
+
+</body>
+</html>
